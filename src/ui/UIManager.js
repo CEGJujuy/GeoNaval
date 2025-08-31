@@ -108,6 +108,9 @@ export class UIManager {
     document.getElementById('new-game-btn').addEventListener('click', () => {
       this.startNewGame()
     })
+
+    // Make UIManager globally accessible for modal callbacks
+    window.uiManager = this
   }
 
   async handleCellClick(row, col) {
@@ -219,7 +222,8 @@ export class UIManager {
   startNewGame() {
     this.gameController.newGame()
     this.gameController.initializeGame()
-    this.render()
+    this.updateBoardDisplay()
+    this.updateUI()
   }
 
   updateUI() {
@@ -239,6 +243,33 @@ export class UIManager {
     document.querySelectorAll('.continent-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.continent === this.gameController.currentContinent)
     })
+
+    this.updateBoardDisplay()
+  }
+
+  updateBoardDisplay() {
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        const cell = document.getElementById(`cell-${row}-${col}`)
+        const boardCell = this.gameController.board[row][col]
+        
+        if (cell) {
+          // Reset cell classes
+          cell.className = 'cell'
+          cell.textContent = ''
+          
+          if (boardCell && boardCell.hit) {
+            if (boardCell.type === 'ship') {
+              cell.classList.add('hit')
+              cell.textContent = boardCell.country.country.substring(0, 3).toUpperCase()
+            } else if (boardCell.type === 'miss') {
+              cell.classList.add('miss')
+              cell.textContent = '💧'
+            }
+          }
+        }
+      }
+    }
   }
 
   showGameOver() {
