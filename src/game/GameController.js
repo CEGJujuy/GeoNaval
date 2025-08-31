@@ -147,19 +147,21 @@ export class GameController {
   }
 
   answerQuestion(questionIndex, country) {
-    const isCorrect = questionIndex === 0 // Assuming correct answer is always first for simplicity
+    // This method is now handled by UIManager
+    // Keep for compatibility but actual logic is in handleAnswer
+    return true
+  }
+
+  processAnswer(answerIndex, correctIndex) {
+    const isCorrect = answerIndex === correctIndex
     
     if (isCorrect) {
-      this.soundManager.playHit()
       this.storageManager.incrementScore()
     } else {
-      this.soundManager.playMiss()
       this.storageManager.incrementErrors()
     }
     
-    this.checkGameOver()
     this.saveGameState()
-    
     return isCorrect
   }
 
